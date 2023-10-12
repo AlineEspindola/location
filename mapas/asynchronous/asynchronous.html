@@ -10,10 +10,10 @@
       background-color: grey;
     }
   </style>
-  <title>Tempo Real</title>
+  <title>Assíncrono</title>
 </head>
 <body>
-  <h3>Mapa em Tempo Real</h3>
+  <h3>Mapa Assíncrono</h3>
 
   <div id="map">
   </div>
@@ -37,15 +37,19 @@
     locationButton.classList.add("custom-map-control-button");
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
-    function enviar(){
-      fetch (`recebe.php?lat=${lat}&lon=${lon}`, {
-      }).then(function(resposta){
-          if (!resposta.ok){
-              alert("Não foi possível enviar");
+    function send(){
+      fetch (`receive.php?lat=${lat}&lgn=${lgn}`, {
+      }).then(function(answer){
+          if (!answer.ok){
+            alert("Não foi possível enviar");
           }
-          console.log(resposta)
+          else{
+            console.log(answer)
+          }
       });
     }
+
+    send();
 
 
     setInterval(() => {
