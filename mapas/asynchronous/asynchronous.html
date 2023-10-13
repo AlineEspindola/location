@@ -37,16 +37,38 @@
     locationButton.classList.add("custom-map-control-button");
     map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
 
+
     function send(){
-      fetch (`receive.php?lat=${lat}&lgn=${lgn}`, {
-      }).then(function(answer){
-          if (!answer.ok){
-            alert("Não foi possível enviar");
-          }
-          else{
-            console.log(answer)
-          }
-      });
+      //Faço isso para pegar as variáveis de latidude e longitude
+      navigator.geolocation.getCurrentPosition(
+            (position) => {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+            };
+
+            //Muda o mapa para a localização desse dispositivo
+            infoWindow.setPosition(pos);
+            infoWindow.setContent("Location found.");
+            infoWindow.open(map);
+            map.setCenter(pos);
+
+            //Envia latidude e longitude pro Receive
+            fetch (`receive.php?lat=${pos.lat}&lgn=${pos.lng}`, {
+            }).then(function(answer){
+                //Vai receber  uma resposta, com ok:true se deu certo, ou ok:false de deu errado
+                if (!answer.ok){
+                  alert("Não foi possível enviar");
+                }
+                else{
+                  console.log(answer)
+                }
+            });
+            },
+            () => {
+            handleLocationError(true, infoWindow, map.getCenter());
+            }
+        );
     }
 
     send();
@@ -55,22 +77,7 @@
     setInterval(() => {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-            const pos = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
-            };
 
-            infoWindow.setPosition(pos);
-            infoWindow.setContent("Location found.");
-            infoWindow.open(map);
-            map.setCenter(pos);
-            },
-            () => {
-            handleLocationError(true, infoWindow, map.getCenter());
-            }
-        );
         } else {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
