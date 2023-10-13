@@ -14,9 +14,10 @@ if ($lat && $lng){
 }
 
 $id = $connection->query("SELECT id FROM device ORDER BY id DESC LIMIT 1");
+//Para transformar em formato json
 $data = $id->fetchAll(PDO::FETCH_ASSOC);
 echo json_encode($data);
 
-//header('Location: asynchronous.html');
+header('Location: asynchronous.html');
 
 ?>

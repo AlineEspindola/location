@@ -16,6 +16,7 @@
   <h3>Mapa Assíncrono</h3>
 
   <div id="map">
+    <!-- Esse holdId (Segurar ID) serve para guardar o id da pessoa-->
     <p id="holdId" style="display: none;"></p>
   </div>
   <script>
@@ -68,6 +69,7 @@
                 return answer.json();
             }).then(function(answer){
               console.log(answer)
+              //Aqui vamos receber a resposta (id) e colocar ele dentro do holdId
               answer.forEach(function(a){
                 const id = a.id
                 console.log(id)
@@ -86,6 +88,7 @@
 
     setInterval(() => {
         // Try HTML5 geolocation.
+        //A cada intervalo, pegamos o ID, mandamos ele pro display.php 
         if (navigator.geolocation) {
           id = holdId.innerHTML
           fetch (`display.php?id=${id}`, {
@@ -100,13 +103,15 @@
           }).then(function(answer){
               console.log(answer)
               answer.forEach(function(a){
+                //Recebemos as coordenadas do último id
                 console.log(typeof parseFloat(a.lat))
+                    //parseFloat transforma a string num número com vírgula
                     var pos = {
                         lat: parseFloat(a.lat),
                         lng: parseFloat(a.lng),
                     };
 
-                    //Muda o mapa para a localização desse dispositivo
+                    //Muda o mapa para a localização do último id
                     infoWindow.setPosition(pos);
                     infoWindow.setContent("Olá Mundo");
                     infoWindow.open(map);
