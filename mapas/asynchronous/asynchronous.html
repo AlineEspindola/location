@@ -16,8 +16,10 @@
   <h3>Mapa Assíncrono</h3>
 
   <div id="map">
+    <p id="holdId" style="display: none;"></p>
   </div>
   <script>
+    holdId = document.getElementById("holdId")
     // Note: This example requires that you consent to location sharing when
     // prompted by your browser. If you see the error "The Geolocation service
     // failed.", it means you probably did not give permission for the browser to
@@ -67,8 +69,9 @@
             }).then(function(answer){
               console.log(answer)
               answer.forEach(function(a){
-                let id = a.id
+                const id = a.id
                 console.log(id)
+                holdId.innerHTML = id
               })
             })
             },
@@ -84,6 +87,34 @@
     setInterval(() => {
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
+          id = holdId.innerHTML
+          fetch (`display.php?id=${id}`, {
+          }).then(function(answer){
+            if (!answer.ok){
+              alert("Não foi possível enviar");
+            }
+            else{
+              console.log(answer)
+            }
+            return answer.json();
+          }).then(function(answer){
+              console.log(answer)
+              answer.forEach(function(a){
+                console.log(typeof parseFloat(a.lat))
+                    var pos = {
+                        lat: parseFloat(a.lat),
+                        lng: parseFloat(a.lng),
+                    };
+
+                    //Muda o mapa para a localização desse dispositivo
+                    infoWindow.setPosition(pos);
+                    infoWindow.setContent("Olá Mundo");
+                    infoWindow.open(map);
+                    map.setCenter(pos);
+              })
+            })
+
+
 
         } else {
         // Browser doesn't support Geolocation
