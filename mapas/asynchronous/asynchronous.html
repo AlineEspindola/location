@@ -39,7 +39,7 @@
 
 
     function send(){
-      //Faço isso para pegar as variáveis de latidude e longitude
+      //Esta função pega as variáveis de latidude e longitude
       navigator.geolocation.getCurrentPosition(
             (position) => {
             var pos = {
@@ -49,7 +49,7 @@
 
             //Muda o mapa para a localização desse dispositivo
             infoWindow.setPosition(pos);
-            infoWindow.setContent("Location found.");
+            infoWindow.setContent("Olá Mundo");
             infoWindow.open(map);
             map.setCenter(pos);
 
@@ -63,7 +63,14 @@
                 else{
                   console.log(answer)
                 }
-            });
+                return answer.json();
+            }).then(function(answer){
+              console.log(answer)
+              answer.forEach(function(a){
+                let id = a.id
+                console.log(id)
+              })
+            })
             },
             () => {
             handleLocationError(true, infoWindow, map.getCenter());
