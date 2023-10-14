@@ -2,6 +2,12 @@
 require 'connection.php';
 
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+$lat = filter_input(INPUT_GET, 'lat', FILTER_SANITIZE_SPECIAL_CHARS);
+$lng = filter_input(INPUT_GET, 'lgn', FILTER_SANITIZE_SPECIAL_CHARS);
+
+//Transforma a String em Número Decimal. Indo por número direto, não pega o .   Ex: 28.9 vira 289
+$lat = floatval($lat);
+$lng = floatval($lng);
 
 
 $connection -> query("UPDATE device SET lat=$lat AND lng=$lng WHERE $id=id");

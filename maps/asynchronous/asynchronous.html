@@ -16,13 +16,17 @@
   <h3>Mapa Assíncrono</h3>
 
   <div id="map">
-    <!-- Esse holdId (Segurar ID) serve para guardar o id da pessoa-->
+    <!-- Esses hold servem para guardar as variavéis-->
     <p id="holdId" style="display: none;"></p> 
+    <p id="holdLat" style="display: none"></p>
+    <p id="holdLng" style="display: none"></p>
   </div>
   
 
   <script>
     holdId = document.getElementById("holdId")
+    holdLat = document.getElementById("holdLat")
+    holdLng = document.getElementById("holdLng")
     // Note: This example requires that you consent to location sharing when
     // prompted by your browser. If you see the error "The Geolocation service
     // failed.", it means you probably did not give permission for the browser to
@@ -73,7 +77,11 @@
               // Aqui vamos receber a resposta (id) e colocar ele dentro do holdId
               answer.forEach(function(a){
                 const id = a.id
+                const lat = a.lat
+                const lng = a.lng
                 holdId.innerHTML = id
+                holdLat.innerHTML = lat
+                holdLng.innerHTML = lng
               })
             })
             },
@@ -90,7 +98,9 @@
         // Try HTML5 geolocation.
         if (navigator.geolocation) {
           let id = holdId.innerHTML
-          fetch (`display.php?id=${id}`, {
+          let lat = holdLat.innerHTML
+          let lng = holdLng.innerHTML
+          fetch (`display.php?id=${id}&lat=${lat}&lng=${lng}`, {
 
           }).then(function(answer){
             if (!answer.ok){
