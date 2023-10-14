@@ -17,8 +17,10 @@
 
   <div id="map">
     <!-- Esse holdId (Segurar ID) serve para guardar o id da pessoa-->
-    <p id="holdId" style="display: none;"></p>
+    <p id="holdId" style="display: none;"></p> 
   </div>
+  
+
   <script>
     holdId = document.getElementById("holdId")
     // Note: This example requires that you consent to location sharing when
@@ -27,10 +29,11 @@
     // locate you.
     let map, infoWindow;
 
+
     function initMap() {
-    map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 6,
+      map = new google.maps.Map(document.getElementById("map"), {
+      center: { lat: -34.397, lng: 150.644 },
+      zoom: 6,
     });
     infoWindow = new google.maps.InfoWindow();
 
@@ -42,7 +45,7 @@
 
 
     function send(){
-      //Esta função pega as variáveis de latidude e longitude
+      // Esta função pega as variáveis de latidude e longitude
       navigator.geolocation.getCurrentPosition(
             (position) => {
             var pos = {
@@ -50,16 +53,13 @@
                 lng: position.coords.longitude,
             };
 
-            //Muda o mapa para a localização desse dispositivo
             infoWindow.setPosition(pos);
             infoWindow.setContent("Olá Mundo");
             infoWindow.open(map);
             map.setCenter(pos);
 
-            //Envia latidude e longitude pro Receive
             fetch (`receive.php?lat=${pos.lat}&lgn=${pos.lng}`, {
             }).then(function(answer){
-                //Vai receber  uma resposta, com ok:true se deu certo, ou ok:false de deu errado
                 if (!answer.ok){
                   alert("Não foi possível enviar");
                 }
@@ -67,12 +67,12 @@
                   console.log(answer)
                 }
                 return answer.json();
+
             }).then(function(answer){
               console.log(answer)
-              //Aqui vamos receber a resposta (id) e colocar ele dentro do holdId
+              // Aqui vamos receber a resposta (id) e colocar ele dentro do holdId
               answer.forEach(function(a){
                 const id = a.id
-                console.log(id)
                 holdId.innerHTML = id
               })
             })
@@ -88,10 +88,10 @@
 
     setInterval(() => {
         // Try HTML5 geolocation.
-        //A cada intervalo, pegamos o ID, mandamos ele pro display.php 
         if (navigator.geolocation) {
-          id = holdId.innerHTML
+          let id = holdId.innerHTML
           fetch (`display.php?id=${id}`, {
+
           }).then(function(answer){
             if (!answer.ok){
               alert("Não foi possível enviar");
@@ -100,12 +100,13 @@
               console.log(answer)
             }
             return answer.json();
+
           }).then(function(answer){
               console.log(answer)
               answer.forEach(function(a){
-                //Recebemos as coordenadas do último id
+                // Recebemos as coordenadas do último id
                 console.log(typeof parseFloat(a.lat))
-                    //parseFloat transforma a string num número com vírgula
+                    // parseFloat transforma a string num número com vírgula
                     var pos = {
                         lat: parseFloat(a.lat),
                         lng: parseFloat(a.lng),
@@ -119,23 +120,22 @@
               })
             })
 
-
-
-        } else {
+        }else{
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
         }
+
     }, 5000);
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(
-        browserHasGeolocation
-        ? "Error: The Geolocation service failed."
-        : "Error: Your browser doesn't support geolocation."
-    );
-    infoWindow.open(map);
+      infoWindow.setPosition(pos);
+      infoWindow.setContent(
+          browserHasGeolocation
+          ? "Error: The Geolocation service failed."
+          : "Error: Your browser doesn't support geolocation."
+      );
+      infoWindow.open(map);
     }
 
     window.initMap = initMap;
