@@ -18,8 +18,6 @@
   <div id="map">
     <!-- Esses hold servem para guardar as variavéis-->
     <p id="holdId" style="display: none;"></p> 
-    <p id="holdLat" style="display: none"></p>
-    <p id="holdLng" style="display: none"></p>
   </div>
   
 
@@ -37,7 +35,7 @@
     function initMap() {
       map = new google.maps.Map(document.getElementById("map"), {
       center: { lat: -34.397, lng: 150.644 },
-      zoom: 6,
+      zoom: 15,
     });
     infoWindow = new google.maps.InfoWindow();
 
@@ -77,11 +75,7 @@
               // Aqui vamos receber a resposta (id) e colocar ele dentro do holdId
               answer.forEach(function(a){
                 const id = a.id
-                const lat = a.lat
-                const lng = a.lng
                 holdId.innerHTML = id
-                holdLat.innerHTML = lat
-                holdLng.innerHTML = lng
               })
             })
             },
@@ -95,23 +89,26 @@
 
 
     setInterval(() => {
-        // Try HTML5 geolocation.
+        let id = holdId.innerHTML
+
         if (navigator.geolocation) {
-          let id = holdId.innerHTML
-          let lat = holdLat.innerHTML
-          let lng = holdLng.innerHTML
-          fetch (`display.php?id=${id}&lat=${lat}&lng=${lng}`, {
-
-          }).then(function(answer){
-            if (!answer.ok){
-              alert("Não foi possível enviar");
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
             }
-            else{
-              console.log(answer)
-            }
-            return answer.json();
+            fetch (`display.php?id=${id}&lat=${pos.lat}&lng=${pos.lng}`, {
+            }).then(function(answer){
+                if (!answer.ok){
+                  alert("Não foi possível enviar");
+                }
+                else{
+                  console.log(answer)
+                }
+                return answer.json();
 
-          }).then(function(answer){
+            }).then(function(answer){
               console.log(answer)
               answer.forEach(function(a){
                 // Recebemos as coordenadas do último id
@@ -130,12 +127,27 @@
               })
             })
 
+            infoWindow.setPosition(pos);
+            infoWindow.setContent("Olá Mundo");
+            infoWindow.open(map);
+            map.setCenter(pos);
+
+
+            },
+            () => {
+            handleLocationError(true, infoWindow, map.getCenter());
+            }
+        );
+        ///////////////////////////////////////////////////////
+
+          //fetch (`display.php?id=${id}&lat=${lat}&lng=${lng}`, 
+
         }else{
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
         }
 
-    }, 5000);
+    }, 10000);
     }
 
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {

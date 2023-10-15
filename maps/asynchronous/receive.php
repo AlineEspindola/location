@@ -18,6 +18,4 @@ $id = $connection->query("SELECT id FROM device ORDER BY id DESC LIMIT 1");
 $data = $id->fetchAll(PDO::FETCH_ASSOC);
 echo json_encode($data);
 
-header('Location: asynchronous.html');
-
 ?>
